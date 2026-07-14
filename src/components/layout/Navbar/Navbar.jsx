@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../../../context/CartContext';
 import './Navbar.css';
 
 export default function Navbar({ onShop, onHome, onContact, onLinkstarApp, currentPage }) {
@@ -92,7 +92,7 @@ export default function Navbar({ onShop, onHome, onContact, onLinkstarApp, curre
           <button 
             className="navbar__cart" 
             aria-label="Carrito de compras"
-            onClick={() => setIsOpen(true)}
+            onClick={() => setIsOpen(!isOpen)}
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />

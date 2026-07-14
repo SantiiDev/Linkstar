@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { CartProvider } from './context/CartContext';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Features from './components/Features';
-import HowItWorks from './components/HowItWorks';
-import ReviewsCTA from './components/ReviewsCTA';
-import FAQ from './components/FAQ';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import Shop from './components/Shop';
-import LinkstarApp from './components/LinkstarApp';
-import Cart from './components/Cart';
-import Checkout from './components/Checkout';
+import Navbar from './components/layout/Navbar/Navbar';
+import Hero from './components/sections/Hero/Hero';
+import Features from './components/sections/Features/Features';
+import HowItWorks from './components/sections/HowItWorks/HowItWorks';
+import ReviewsCTA from './components/sections/ReviewsCTA/ReviewsCTA';
+import FAQ from './components/sections/FAQ/FAQ';
+import Contact from './pages/Contact/Contact';
+import Footer from './components/layout/Footer/Footer';
+import Shop from './pages/Shop/Shop';
+import LinkstarApp from './pages/LinkstarApp/LinkstarApp';
+import Cart from './components/common/Cart/Cart';
+import Checkout from './pages/Checkout/Checkout';
 
 export default function App() {
   const [page, setPage] = useState('home'); // 'home' | 'shop' | 'contact' | 'checkout'
@@ -52,21 +52,21 @@ export default function App() {
       {page === 'shop' && (
         <>
           <Shop onBack={goHome} />
-          <Footer onContact={goToContact} onShop={goToShop} />
+          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} />
         </>
       )}
 
       {page === 'contact' && (
         <>
           <Contact />
-          <Footer onContact={goToContact} onShop={goToShop} />
+          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} />
         </>
       )}
 
       {page === 'linkstarapp' && (
         <>
-          <LinkstarApp onShop={goToShop} />
-          <Footer onContact={goToContact} onShop={goToShop} />
+          <LinkstarApp onShop={goToShop} onContact={goToContact} />
+          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} />
         </>
       )}
 
@@ -79,7 +79,7 @@ export default function App() {
             <ReviewsCTA onShop={goToShop} />
             <FAQ onContact={goToContact} />
           </main>
-          <Footer onContact={goToContact} onShop={goToShop} />
+          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} />
         </>
       )}
 

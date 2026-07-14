@@ -3,7 +3,7 @@ import './Footer.css';
 const footerLinks = {
   Producto: [
     { label: 'Carteles NFC', href: '#tienda' },
-    { label: 'Plataforma', href: '#plataforma' },
+    { label: 'LinkstarApp', href: '#linkstarapp' },
   ],
   Empresa: [
     { label: 'Sobre nosotros', href: '#' },
@@ -19,7 +19,7 @@ const footerLinks = {
   ],
 };
 
-export default function Footer({ onContact, onShop }) {
+export default function Footer({ onContact, onShop, onLinkstarApp }) {
   return (
     <footer className="footer">
       <div className="footer__inner container">
@@ -84,10 +84,12 @@ export default function Footer({ onContact, onShop }) {
                           if (link.href === '#contacto' && onContact) {
                             e.preventDefault();
                             onContact();
-                          }
-                          if (link.href === '#tienda' && onShop) {
+                          } else if (link.href === '#tienda' && onShop) {
                             e.preventDefault();
                             onShop();
+                          } else if (link.href === '#linkstarapp' && onLinkstarApp) {
+                            e.preventDefault();
+                            onLinkstarApp();
                           }
                         }}
                       >

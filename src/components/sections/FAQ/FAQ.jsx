@@ -54,7 +54,7 @@ function FAQItem({ question, answer, isOpen, onClick, index }) {
   );
 }
 
-export default function FAQ({ onContact }) {
+export default function FAQ({ onContact, data = faqData, title = "Todo lo que necesitas", titleSpan = "saber", description = "¿Tienes dudas? Aquí encontrarás las respuestas a las preguntas más comunes sobre nuestros carteles expositores NFC." }) {
   const [openIndex, setOpenIndex] = useState(0);
   const sectionRef = useRef(null);
 
@@ -83,16 +83,15 @@ export default function FAQ({ onContact }) {
         <div className="faq__header">
           <span className="faq__label">Preguntas frecuentes</span>
           <h2 className="faq__title">
-            Todo lo que necesitas <span>saber</span>
+            {title} {titleSpan && <span>{titleSpan}</span>}
           </h2>
           <p className="faq__description">
-            ¿Tienes dudas? Aquí encontrarás las respuestas a las preguntas más comunes 
-            sobre nuestros carteles expositores NFC.
+            {description}
           </p>
         </div>
 
         <div className="faq__list">
-          {faqData.map((item, index) => (
+          {data.map((item, index) => (
             <FAQItem
               key={index}
               index={index}

@@ -170,6 +170,7 @@
   height: 100%;
   object-fit: contain;
   filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+  clip-path: inset(1.5px 0 0 0);
 }
 
 .cart-item__info {

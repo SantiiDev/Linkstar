@@ -239,16 +239,23 @@
   position: absolute;
   width: 65%;
   border-radius: var(--radius-2xl);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
   animation: float 6s ease-in-out infinite;
   background: white;
-  transition: z-index 0s, box-shadow 0.3s ease;
+  transition: box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+              rotate 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+              scale 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              z-index 0s;
   cursor: pointer;
+  rotate: var(--rot, 0deg);
+  scale: 1;
 }
 
 .hero__image-piece:hover {
   z-index: 10;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+  rotate: 0deg;
+  scale: 1.05;
 }
 
 .hero__image-piece--1 {
@@ -267,8 +274,8 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
-  50% { transform: translateY(-12px) rotate(var(--rot, 0deg)); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
 }
 
 /* --- Responsive --- */
@@ -298,12 +305,18 @@
     justify-content: center;
   }
 
+  /* Cards appear AFTER the title content (natural flow) */
   .hero__image-wrapper {
-    order: -1;
+    order: 1;
   }
 
   .hero__image {
     max-width: 380px;
+  }
+
+  .hero__image-composite {
+    max-width: 400px;
+    height: 380px;
   }
 
   .hero__image-badge {
@@ -325,12 +338,21 @@
   }
 
   .hero__stats {
-    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: var(--space-4);
   }
 
   .hero__stat-divider {
-    width: 40px;
-    height: 1px;
+    display: none;
+  }
+
+  .hero__image-composite {
+    max-width: 300px;
+    height: 300px;
+  }
+
+  .hero__image-piece {
+    width: 60%;
   }
 }
