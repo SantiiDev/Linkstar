@@ -26,21 +26,25 @@ const CountUp = ({ end, duration = 2000, suffix = '' }) => {
   const countRef = useRef(null);
 
   useEffect(() => {
+    let animationFrameId;
+    let isMounted = true;
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
           let startTimestamp = null;
           const animate = (timestamp) => {
+            if (!isMounted) return;
             if (!startTimestamp) startTimestamp = timestamp;
             const progress = timestamp - startTimestamp;
             const percentage = Math.min(progress / duration, 1);
             const easeOut = 1 - Math.pow(1 - percentage, 3);
             setCount(Math.floor(easeOut * end));
             if (progress < duration) {
-              requestAnimationFrame(animate);
+              animationFrameId = requestAnimationFrame(animate);
             }
           };
-          requestAnimationFrame(animate);
+          animationFrameId = requestAnimationFrame(animate);
           observer.disconnect();
         }
       },
@@ -48,7 +52,11 @@ const CountUp = ({ end, duration = 2000, suffix = '' }) => {
     );
 
     if (countRef.current) observer.observe(countRef.current);
-    return () => observer.disconnect();
+    return () => {
+      isMounted = false;
+      observer.disconnect();
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
   }, [end, duration]);
 
   return <span ref={countRef}>{count}{suffix}</span>;
@@ -150,9 +158,55 @@ const useCases = [
   }
 ];
 
+const chartDataMock = [
+  { scans: 45, reviews: 18, day: 'Lun' },
+  { scans: 68, reviews: 28, day: 'Mar' },
+  { scans: 40, reviews: 15, day: 'Mié' },
+  { scans: 85, reviews: 35, day: 'Jue' },
+  { scans: 55, reviews: 22, day: 'Vie' },
+  { scans: 72, reviews: 30, day: 'Sáb' },
+  { scans: 95, reviews: 40, day: 'Dom' },
+];
+
+const recentActivityMock = [
+  { device: 'Google NFC #1', time: 'Hace 2 min', type: 'Escaneo' },
+  { device: 'Instagram NFC #3', time: 'Hace 8 min', type: 'Escaneo' },
+  { device: 'Google NFC #2', time: 'Hace 15 min', type: 'Reseña' },
+  { device: 'Google NFC #1', time: 'Hace 23 min', type: 'Escaneo' },
+  { device: 'Instagram NFC #1', time: 'Hace 41 min', type: 'Reseña' },
+];
+
+const topDevicesMock = [
+  { name: 'Google NFC #1', img: '/google-nfc-black.png', scans: 412, status: 'Activo' },
+  { name: 'Instagram NFC #1', img: '/instagram-nfc-white.png', scans: 328, status: 'Activo' },
+  { name: 'Google NFC #2', img: '/google-nfc-white.png', scans: 287, status: 'Activo' },
+  { name: 'Instagram NFC #2', img: '/instagram-nfc-black.png', scans: 195, status: 'Activo' },
+];
+
+const employeeRankingMock = [
+  { pos: '1', name: 'María G.', reviews: 47, pct: 100 },
+  { pos: '2', name: 'Carlos R.', reviews: 38, pct: 81 },
+  { pos: '3', name: 'Laura P.', reviews: 29, pct: 62 },
+  { pos: '4', name: 'Diego M.', reviews: 15, pct: 32 },
+];
+
+const locationsMock = [
+  { name: 'Centro', scans: 312, trend: '+18%', status: 'up' },
+  { name: 'Norte', scans: 245, trend: '+12%', status: 'up' },
+  { name: 'Sur', scans: 89, trend: '-5%', status: 'down' },
+  { name: 'Este', scans: 198, trend: '+8%', status: 'up' },
+];
+
+const multiClientMock = [
+  { name: 'La Parrilla del Parque', devices: 4, reviews: 127, rating: '4.8' },
+  { name: 'Gimnasio FitLife Centro', devices: 2, reviews: 89, rating: '4.6' },
+  { name: 'Clínica Dental Sonrisa', devices: 3, reviews: 64, rating: '4.9' },
+];
+
 
 export default function LinkstarApp({ onShop, onContact }) {
   const sectionRefs = useRef([]);
+  sectionRefs.current = []; // Limpiamos referencias en cada render
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -198,16 +252,16 @@ export default function LinkstarApp({ onShop, onContact }) {
               <strong> Sin suscripciones. Sin costes ocultos.</strong>
             </p>
             <div className="lapp__ctas">
-              <a href="#tienda" className="lapp__btn lapp__btn--primary" onClick={(e) => { e.preventDefault(); onShop(); }}>
+              <button type="button" className="lapp__btn lapp__btn--primary" onClick={(e) => { e.preventDefault(); onShop(); }}>
                 Comprar Dispositivos
-              </a>
-              <a href="#login" className="lapp__btn lapp__btn--secondary" onClick={(e) => e.preventDefault()}>
+              </button>
+              <button type="button" className="lapp__btn lapp__btn--secondary" onClick={(e) => e.preventDefault()}>
                 Acceder a LinkstarApp
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
                 </svg>
-              </a>
+              </button>
             </div>
 
             <div className="lapp__stats">
@@ -315,15 +369,7 @@ export default function LinkstarApp({ onShop, onContact }) {
                     <span>300</span><span>200</span><span>100</span><span>0</span>
                   </div>
                   <div className="lapp__dash-chart-bars">
-                    {[
-                      { scans: 45, reviews: 18, day: 'Lun' },
-                      { scans: 68, reviews: 28, day: 'Mar' },
-                      { scans: 40, reviews: 15, day: 'Mié' },
-                      { scans: 85, reviews: 35, day: 'Jue' },
-                      { scans: 55, reviews: 22, day: 'Vie' },
-                      { scans: 72, reviews: 30, day: 'Sáb' },
-                      { scans: 95, reviews: 40, day: 'Dom' },
-                    ].map((d, i) => (
+                    {chartDataMock.map((d, i) => (
                       <div className="lapp__dash-chart-col" key={i}>
                         <div className="lapp__dash-bar-group">
                           <div className="lapp__dash-bar lapp__dash-bar--scans" style={{ height: `${d.scans}%` }}></div>
@@ -340,13 +386,7 @@ export default function LinkstarApp({ onShop, onContact }) {
               <div className="lapp__dash-activity-card">
                 <span className="lapp__dash-chart-title">Actividad Reciente</span>
                 <div className="lapp__dash-activity-list">
-                  {[
-                    { device: 'Google NFC #1', time: 'Hace 2 min', type: 'Escaneo' },
-                    { device: 'Instagram NFC #3', time: 'Hace 8 min', type: 'Escaneo' },
-                    { device: 'Google NFC #2', time: 'Hace 15 min', type: 'Reseña' },
-                    { device: 'Google NFC #1', time: 'Hace 23 min', type: 'Escaneo' },
-                    { device: 'Instagram NFC #1', time: 'Hace 41 min', type: 'Reseña' },
-                  ].map((act, i) => (
+                  {recentActivityMock.map((act, i) => (
                     <div className="lapp__dash-activity-row" key={i}>
                       <div className={`lapp__dash-activity-dot lapp__dash-activity-dot--${act.type === 'Reseña' ? 'review' : 'scan'}`}></div>
                       <div className="lapp__dash-activity-info">
@@ -364,12 +404,7 @@ export default function LinkstarApp({ onShop, onContact }) {
             <div className="lapp__dash-devices-card">
               <span className="lapp__dash-chart-title">Dispositivos — Rendimiento</span>
               <div className="lapp__dash-devices-grid">
-                {[
-                  { name: 'Google NFC #1', img: '/google-nfc-black.png', scans: 412, status: 'Activo' },
-                  { name: 'Instagram NFC #1', img: '/instagram-nfc-white.png', scans: 328, status: 'Activo' },
-                  { name: 'Google NFC #2', img: '/google-nfc-white.png', scans: 287, status: 'Activo' },
-                  { name: 'Instagram NFC #2', img: '/instagram-nfc-black.png', scans: 195, status: 'Activo' },
-                ].map((dev, i) => (
+                {topDevicesMock.map((dev, i) => (
                   <div className="lapp__dash-device" key={i}>
                     <img src={dev.img} alt={dev.name} className="lapp__dash-device-img" />
                     <div className="lapp__dash-device-info">
@@ -448,12 +483,7 @@ export default function LinkstarApp({ onShop, onContact }) {
                   <span className="lapp__mock-header-badge">Este mes</span>
                 </div>
                 <div className="lapp__case-mock-body lapp__case-mock-body--ranking">
-                  {[
-                    { pos: '1', name: 'María G.', reviews: 47, pct: 100 },
-                    { pos: '2', name: 'Carlos R.', reviews: 38, pct: 81 },
-                    { pos: '3', name: 'Laura P.', reviews: 29, pct: 62 },
-                    { pos: '4', name: 'Diego M.', reviews: 15, pct: 32 },
-                  ].map((emp, j) => (
+                  {employeeRankingMock.map((emp, j) => (
                     <div className={`lapp__ranking-row${j === 0 ? ' lapp__ranking-row--top' : ''}`} key={j}>
                       <div className="lapp__ranking-pos">{emp.pos}</div>
                       <div className="lapp__ranking-avatar" style={{ background: ['var(--color-orange)', 'var(--color-forest)', 'var(--color-gold)', 'var(--color-navy)'][j] }}>
@@ -507,12 +537,7 @@ export default function LinkstarApp({ onShop, onContact }) {
                 </div>
                 <div className="lapp__case-mock-body lapp__case-mock-body--locations">
                   <div className="lapp__locations-grid">
-                    {[
-                      { name: 'Centro', scans: 312, trend: '+18%', status: 'up' },
-                      { name: 'Norte', scans: 245, trend: '+12%', status: 'up' },
-                      { name: 'Sur', scans: 89, trend: '-5%', status: 'down' },
-                      { name: 'Este', scans: 198, trend: '+8%', status: 'up' },
-                    ].map((loc, j) => (
+                    {locationsMock.map((loc, j) => (
                       <div className="lapp__location-card" key={j}>
                         <div className="lapp__location-header">
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-gold)" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
@@ -566,11 +591,7 @@ export default function LinkstarApp({ onShop, onContact }) {
                 </div>
                 <div className="lapp__case-mock-body lapp__case-mock-body--clients">
                   <div className="lapp__clients-list">
-                    {[
-                      { name: 'La Parrilla del Parque', devices: 4, reviews: 127, rating: '4.8' },
-                      { name: 'Gimnasio FitLife Centro', devices: 2, reviews: 89, rating: '4.6' },
-                      { name: 'Clínica Dental Sonrisa', devices: 3, reviews: 64, rating: '4.9' },
-                    ].map((client, j) => (
+                    {multiClientMock.map((client, j) => (
                       <div className="lapp__client-row" key={j}>
                         <div className="lapp__client-info">
                           <span className="lapp__client-name">{client.name}</span>

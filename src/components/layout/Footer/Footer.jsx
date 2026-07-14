@@ -6,20 +6,20 @@ const footerLinks = {
     { label: 'LinkstarApp', href: '#linkstarapp' },
   ],
   Empresa: [
-    { label: 'Sobre nosotros', href: '#' },
+    { label: 'Sobre nosotros', href: '#sobre-nosotros', page: 'about' },
   ],
   Soporte: [
     { label: 'Contacto', href: '#contacto' },
-    { label: 'Garantía', href: '#' },
+    { label: 'Garantía', href: '#garantia', page: 'warranty' },
   ],
   Legal: [
-    { label: 'Aviso legal', href: '#' },
-    { label: 'Política de privacidad', href: '#' },
-    { label: 'Términos y condiciones', href: '#' },
+    { label: 'Aviso legal', href: '#aviso-legal', page: 'legal' },
+    { label: 'Política de privacidad', href: '#privacidad', page: 'privacy' },
+    { label: 'Términos y condiciones', href: '#terminos', page: 'terms' },
   ],
 };
 
-export default function Footer({ onContact, onShop, onLinkstarApp }) {
+export default function Footer({ onContact, onShop, onLinkstarApp, onNavigate }) {
   return (
     <footer className="footer">
       <div className="footer__inner container">
@@ -90,6 +90,9 @@ export default function Footer({ onContact, onShop, onLinkstarApp }) {
                           } else if (link.href === '#linkstarapp' && onLinkstarApp) {
                             e.preventDefault();
                             onLinkstarApp();
+                          } else if (link.page && onNavigate) {
+                            e.preventDefault();
+                            onNavigate(link.page);
                           }
                         }}
                       >

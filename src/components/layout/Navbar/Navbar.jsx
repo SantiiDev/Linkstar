@@ -5,7 +5,7 @@ import './Navbar.css';
 export default function Navbar({ onShop, onHome, onContact, onLinkstarApp, currentPage }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { totalItems, setIsOpen } = useCart();
+  const { totalItems, isOpen, setIsOpen } = useCart();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);

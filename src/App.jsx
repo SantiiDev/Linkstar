@@ -12,6 +12,11 @@ import Shop from './pages/Shop/Shop';
 import LinkstarApp from './pages/LinkstarApp/LinkstarApp';
 import Cart from './components/common/Cart/Cart';
 import Checkout from './pages/Checkout/Checkout';
+import Legal from './pages/Info/Legal';
+import Privacy from './pages/Info/Privacy';
+import Terms from './pages/Info/Terms';
+import Warranty from './pages/Info/Warranty';
+import About from './pages/Info/About';
 
 export default function App() {
   const [page, setPage] = useState('home'); // 'home' | 'shop' | 'contact' | 'checkout'
@@ -41,6 +46,11 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const navigateTo = (pageName) => {
+    setPage(pageName);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <CartProvider>
       {page !== 'checkout' && (
@@ -52,21 +62,21 @@ export default function App() {
       {page === 'shop' && (
         <>
           <Shop onBack={goHome} />
-          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} />
+          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} onNavigate={navigateTo} />
         </>
       )}
 
       {page === 'contact' && (
         <>
           <Contact />
-          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} />
+          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} onNavigate={navigateTo} />
         </>
       )}
 
       {page === 'linkstarapp' && (
         <>
           <LinkstarApp onShop={goToShop} onContact={goToContact} />
-          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} />
+          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} onNavigate={navigateTo} />
         </>
       )}
 
@@ -79,7 +89,42 @@ export default function App() {
             <ReviewsCTA onShop={goToShop} />
             <FAQ onContact={goToContact} />
           </main>
-          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} />
+          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} onNavigate={navigateTo} />
+        </>
+      )}
+
+      {page === 'legal' && (
+        <>
+          <Legal />
+          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} onNavigate={navigateTo} />
+        </>
+      )}
+
+      {page === 'privacy' && (
+        <>
+          <Privacy />
+          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} onNavigate={navigateTo} />
+        </>
+      )}
+
+      {page === 'terms' && (
+        <>
+          <Terms />
+          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} onNavigate={navigateTo} />
+        </>
+      )}
+
+      {page === 'warranty' && (
+        <>
+          <Warranty />
+          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} onNavigate={navigateTo} />
+        </>
+      )}
+
+      {page === 'about' && (
+        <>
+          <About />
+          <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} onNavigate={navigateTo} />
         </>
       )}
 
