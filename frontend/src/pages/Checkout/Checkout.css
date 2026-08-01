@@ -198,49 +198,53 @@
   transform: translateY(-1px);
 }
 
-/* Payment methods */
-.checkout__pay-methods {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
-}
-
-.checkout__pay-method {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-4) var(--space-3);
-  background: rgba(27, 26, 46, 0.03);
-  border: 2px solid rgba(27, 26, 46, 0.08);
-  border-radius: var(--radius-xl);
-  font-family: var(--font-family);
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  color: var(--color-navy);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-.checkout__pay-method:hover {
-  border-color: rgba(27, 26, 46, 0.2);
-}
-.checkout__pay-method--active {
-  border-color: var(--color-orange);
-  background: rgba(216, 87, 46, 0.05);
-  color: var(--color-orange);
-}
-
-.checkout__transfer-info {
+/* Order info note (no online payment) */
+.checkout__order-info {
   padding: var(--space-4);
   background: rgba(27, 26, 46, 0.03);
   border-radius: var(--radius-lg);
   border: 1px solid rgba(27, 26, 46, 0.06);
 }
-.checkout__transfer-info p {
+.checkout__order-info p {
   margin: 0;
   font-size: var(--font-size-sm);
   color: rgba(27, 26, 46, 0.6);
   line-height: 1.6;
+}
+
+/* Order review (confirm step) */
+.checkout__review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  background: #fff;
+  border: 1.5px solid rgba(27, 26, 46, 0.08);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2) var(--space-4);
+}
+.checkout__review-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid rgba(27, 26, 46, 0.06);
+}
+.checkout__review-row:last-child {
+  border-bottom: none;
+}
+.checkout__review-label {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: rgba(27, 26, 46, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.checkout__review-value {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-navy);
+  text-align: right;
 }
 
 .checkout__pay-actions {
@@ -316,35 +320,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* Card Payment Brick container */
-.checkout__card-brick {
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  min-height: 300px;
-}
-
-/* MP info box */
-.checkout__mp-info {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  background: rgba(0, 158, 227, 0.06);
-  border: 1px solid rgba(0, 158, 227, 0.15);
-  border-radius: var(--radius-lg);
-}
-.checkout__mp-info-icon {
-  flex-shrink: 0;
-  color: #009ee3;
-  margin-top: 1px;
-}
-.checkout__mp-info p {
-  margin: 0;
-  font-size: var(--font-size-sm);
-  color: rgba(27, 26, 46, 0.65);
-  line-height: 1.6;
-}
-
 /* Payment error */
 .checkout__pay-error {
   display: flex;
@@ -373,70 +348,6 @@
 .checkout__pay-method:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-/* Transfer bank details card */
-.checkout__bank-details {
-  background: #fff;
-  border: 1.5px solid rgba(27, 26, 46, 0.08);
-  border-radius: var(--radius-xl);
-  padding: var(--space-6);
-  width: 100%;
-  max-width: 420px;
-  box-shadow: var(--shadow-md);
-  text-align: left;
-}
-.checkout__bank-title {
-  font-size: var(--font-size-base);
-  font-weight: 800;
-  color: var(--color-navy);
-  margin: 0 0 var(--space-4);
-  text-align: center;
-}
-.checkout__bank-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--space-3) 0;
-  border-bottom: 1px solid rgba(27, 26, 46, 0.06);
-}
-.checkout__bank-row:last-of-type {
-  border-bottom: none;
-}
-.checkout__bank-label {
-  font-size: var(--font-size-xs);
-  font-weight: 700;
-  color: rgba(27, 26, 46, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-.checkout__bank-value {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--color-navy);
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  user-select: all;
-}
-.checkout__bank-value--total {
-  font-size: var(--font-size-lg);
-  font-weight: 900;
-  color: var(--color-orange);
-  font-family: var(--font-family);
-}
-.checkout__bank-note {
-  margin: var(--space-4) 0 0;
-  font-size: var(--font-size-xs);
-  color: rgba(27, 26, 46, 0.55);
-  line-height: 1.6;
-  text-align: center;
-  padding-top: var(--space-3);
-  border-top: 1px solid rgba(27, 26, 46, 0.06);
-}
-
-/* Transfer success icon variant */
-.checkout__success-icon--transfer {
-  background: rgba(0, 158, 227, 0.1);
-  color: #009ee3;
 }
 
 /* Order summary */
@@ -633,7 +544,11 @@
   .checkout__form-row {
     grid-template-columns: 1fr;
   }
-  .checkout__pay-methods {
-    grid-template-columns: 1fr;
+  .checkout__review-row {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .checkout__review-value {
+    text-align: left;
   }
 }

@@ -1,53 +1,74 @@
-import { useState, useEffect } from 'react';
-import { CardPayment } from '@mercadopago/sdk-react';
+import { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import './Checkout.css';
 
 const API_URL = 'http://localhost:3001';
+const WEB3FORMS_KEY = '32d006c0-18f0-411b-989f-19a34a6963c2';
+
+// Web3Forms (plan free) rechaza llamadas server-to-server, así que este mail
+// se manda desde el navegador (igual que el formulario de Contacto) y no
+// desde server.js. No usamos adjuntos reales porque Web3Forms los reserva
+// para el plan Pro (con esta cuenta, un intento de adjuntar hace que
+// rechace todo el envío) — en su lugar, cada producto lleva el link
+// absoluto a su imagen para que se pueda ver con un click.
+async function sendOrderEmail({ orderNumber, customer, items, total }) {
+  const origin = window.location.origin;
+  const itemsText = items
+    .map(i => `• ${i.name} (${i.color === 'negro' ? 'Negro' : 'Blanco'}) x${i.qty} — $${(i.price * i.qty).toLocaleString('es-AR')}\n  Imagen: ${origin}${i.image}`)
+    .join('\n\n');
+
+  const response = await fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      access_key: WEB3FORMS_KEY,
+      subject: `🛒 Nuevo pedido ${orderNumber}`,
+      from_name: 'Linkstar Tienda',
+      name: customer.name,
+      email: customer.email,
+      phone: customer.phone || 'No proporcionado',
+      message: `
+NUEVO PEDIDO: ${orderNumber}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CLIENTE
+  Nombre: ${customer.name}
+  Email: ${customer.email}
+  Teléfono: ${customer.phone || 'No proporcionado'}
+
+DIRECCIÓN DE ENVÍO
+  ${customer.address}
+  ${customer.city}${customer.zip ? ` (${customer.zip})` : ''}
+
+PRODUCTOS
+${itemsText}
+
+TOTAL: $${total.toLocaleString('es-AR')}
+
+⚠️ Pedido sin pago online: coordinar el pago y el envío con el cliente.
+      `.trim(),
+    }),
+  });
+  const result = await response.json();
+  if (!result.success) throw new Error(result.message || 'Web3Forms rechazó el envío');
+}
 
 export default function Checkout({ onBack }) {
   const { items, totalPrice, clearCart } = useCart();
-  const [step, setStep] = useState('info'); // info | payment | success | transfer-success
+  const [step, setStep] = useState('info'); // info | confirm | success
   const [form, setForm] = useState({
     name: '', email: '', phone: '', address: '', city: '', zip: '',
-    cardName: '', cardNumber: '', cardExpiry: '', cardCvv: '',
-    payMethod: 'card',
   });
   const [errors, setErrors] = useState({});
   const [processing, setProcessing] = useState(false);
-  const [payError, setPayError] = useState('');
+  const [orderError, setOrderError] = useState('');
   const [orderNumber, setOrderNumber] = useState('');
-  const [savedTotal, setSavedTotal] = useState(0);
-
-  // Check for MP redirect (success/failure/pending)
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const paymentStatus = params.get('payment');
-    const order = params.get('order');
-
-    if (paymentStatus === 'success' && order) {
-      setOrderNumber(order);
-      setStep('success');
-      clearCart();
-      // Clean URL
-      window.history.replaceState({}, '', window.location.pathname);
-    } else if (paymentStatus === 'failure' && order) {
-      setPayError('El pago fue rechazado. Por favor, intentá con otro método de pago.');
-      setStep('payment');
-      window.history.replaceState({}, '', window.location.pathname);
-    } else if (paymentStatus === 'pending' && order) {
-      setOrderNumber(order);
-      setStep('success');
-      clearCart();
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-  }, [clearCart]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(f => ({ ...f, [name]: value }));
     if (errors[name]) setErrors(err => ({ ...err, [name]: '' }));
-    if (payError) setPayError('');
+    if (orderError) setOrderError('');
   };
 
   const validateInfo = () => {
@@ -63,122 +84,17 @@ export default function Checkout({ onBack }) {
   const handleContinue = () => {
     const errs = validateInfo();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
-    setStep('payment');
+    setStep('confirm');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // ── Pay with Mercado Pago (redirect for MP wallet) ──
-  const handlePayMP = async () => {
+  // ── Realizar pedido (sin pago online) ──
+  const handlePlaceOrder = async () => {
     setProcessing(true);
-    setPayError('');
+    setOrderError('');
 
     try {
-      const response = await fetch(`${API_URL}/api/create-preference`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: items.map(i => ({
-            id: i.id,
-            key: i.key,
-            name: i.name,
-            price: i.price,
-            qty: i.qty,
-            color: i.color,
-            image: i.image,
-          })),
-          customer: {
-            name: form.name,
-            email: form.email,
-            phone: form.phone,
-            address: form.address,
-            city: form.city,
-            zip: form.zip,
-          },
-          payMethod: form.payMethod,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al procesar el pago');
-      }
-
-      window.location.href = data.init_point;
-    } catch (err) {
-      console.error('Payment error:', err);
-      setPayError(err.message || 'Ocurrió un error al procesar el pago. Intentá de nuevo.');
-      setProcessing(false);
-    }
-  };
-
-  // ── Pay with Card (CardPayment Brick onSubmit) ──
-  const handleCardSubmit = async (formData) => {
-    setProcessing(true);
-    setPayError('');
-
-    try {
-      const response = await fetch(`${API_URL}/api/process-payment`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          formData,
-          customer: {
-            name: form.name,
-            email: form.email,
-            phone: form.phone,
-            address: form.address,
-            city: form.city,
-            zip: form.zip,
-          },
-          cartItems: items.map(i => ({
-            id: i.id,
-            key: i.key,
-            name: i.name,
-            price: i.price,
-            qty: i.qty,
-            color: i.color,
-            image: i.image,
-          })),
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al procesar el pago');
-      }
-
-      if (data.status === 'approved') {
-        setOrderNumber(data.order_number);
-        setSavedTotal(total);
-        setStep('success');
-        clearCart();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (data.status === 'in_process' || data.status === 'pending') {
-        setOrderNumber(data.order_number);
-        setSavedTotal(total);
-        setStep('success');
-        clearCart();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        setPayError('El pago fue rechazado. Intentá con otra tarjeta o método de pago.');
-      }
-    } catch (err) {
-      console.error('Card payment error:', err);
-      setPayError(err.message || 'Error al procesar el pago con tarjeta.');
-    } finally {
-      setProcessing(false);
-    }
-  };
-
-  // ── Pay with Transfer ──
-  const handlePayTransfer = async () => {
-    setProcessing(true);
-    setPayError('');
-
-    try {
-      const response = await fetch(`${API_URL}/api/orders/transfer`, {
+      const response = await fetch(`${API_URL}/api/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -205,34 +121,38 @@ export default function Checkout({ onBack }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Error al crear la orden');
+        throw new Error(data.error || 'Error al registrar el pedido');
       }
 
       setOrderNumber(data.order_number);
-      setSavedTotal(total);
-      setStep('transfer-success');
+      setStep('success');
       clearCart();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // El pedido ya quedó guardado: si el mail falla, no lo mostramos como
+      // error de pedido, sólo lo logueamos para poder diagnosticarlo.
+      try {
+        await sendOrderEmail({
+          orderNumber: data.order_number,
+          customer: form,
+          items,
+          total,
+        });
+      } catch (emailErr) {
+        console.error('Order email error:', emailErr);
+      }
     } catch (err) {
-      console.error('Transfer order error:', err);
-      setPayError(err.message || 'Ocurrió un error al procesar la orden. Intentá de nuevo.');
+      console.error('Order error:', err);
+      setOrderError(err.message || 'Ocurrió un error al registrar el pedido. Intentá de nuevo.');
     } finally {
       setProcessing(false);
-    }
-  };
-
-  const handlePay = () => {
-    if (form.payMethod === 'transfer') {
-      handlePayTransfer();
-    } else {
-      handlePayMP();
     }
   };
 
   const shipping = 0;
   const total = totalPrice + shipping;
 
-  // ── Success screen (Mercado Pago) ──
+  // ── Success screen ──
   if (step === 'success') {
     return (
       <section className="checkout">
@@ -244,61 +164,11 @@ export default function Checkout({ onBack }) {
                 <polyline points="22 4 12 14.01 9 11.01" />
               </svg>
             </div>
-            <h2 className="checkout__success-title">¡Pedido confirmado!</h2>
+            <h2 className="checkout__success-title">¡Pedido realizado!</h2>
             <p className="checkout__success-text">
-              Tu pago fue procesado exitosamente. Recibirás un email de confirmación con los detalles de tu envío.
+              Recibimos tu pedido. Muy pronto nos pondremos en contacto por email para coordinar el pago y el envío.
             </p>
             <p className="checkout__success-order">Orden {orderNumber}</p>
-            <button className="checkout__success-btn" onClick={onBack}>
-              Volver al inicio
-            </button>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // ── Transfer success screen ──
-  if (step === 'transfer-success') {
-    return (
-      <section className="checkout">
-        <div className="container checkout__inner">
-          <div className="checkout__success">
-            <div className="checkout__success-icon checkout__success-icon--transfer">
-              <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <path d="M3 9h18M9 21V9" />
-              </svg>
-            </div>
-            <h2 className="checkout__success-title">¡Orden registrada!</h2>
-            <p className="checkout__success-text">
-              Tu pedido fue registrado exitosamente. Realizá la transferencia con los datos que figuran abajo y envianos el comprobante por email.
-            </p>
-            <p className="checkout__success-order">Orden {orderNumber}</p>
-
-            <div className="checkout__bank-details">
-              <h4 className="checkout__bank-title">Datos para transferencia</h4>
-              <div className="checkout__bank-row">
-                <span className="checkout__bank-label">Titular</span>
-                <span className="checkout__bank-value">Santino Gallo</span>
-              </div>
-              <div className="checkout__bank-row">
-                <span className="checkout__bank-label">CVU</span>
-                <span className="checkout__bank-value">0000003100079982912854</span>
-              </div>
-              <div className="checkout__bank-row">
-                <span className="checkout__bank-label">Alias</span>
-                <span className="checkout__bank-value">santinogallo1</span>
-              </div>
-              <div className="checkout__bank-row">
-                <span className="checkout__bank-label">Total a transferir</span>
-                <span className="checkout__bank-value checkout__bank-value--total">${savedTotal.toLocaleString('es-AR')}</span>
-              </div>
-              <p className="checkout__bank-note">
-                📧 Enviá el comprobante a <strong>pagos@linkstar.com</strong> indicando tu número de orden.
-              </p>
-            </div>
-
             <button className="checkout__success-btn" onClick={onBack}>
               Volver al inicio
             </button>
@@ -319,7 +189,7 @@ export default function Checkout({ onBack }) {
             </svg>
             Volver
           </button>
-          <h1 className="checkout__title">Finalizar compra</h1>
+          <h1 className="checkout__title">Realizar pedido</h1>
           {/* Steps indicator */}
           <div className="checkout__steps">
             <div className={`checkout__step ${step === 'info' ? 'checkout__step--active' : 'checkout__step--done'}`}>
@@ -327,9 +197,9 @@ export default function Checkout({ onBack }) {
               <span className="checkout__step-label">Información</span>
             </div>
             <div className="checkout__step-line" />
-            <div className={`checkout__step ${step === 'payment' ? 'checkout__step--active' : ''}`}>
+            <div className={`checkout__step ${step === 'confirm' ? 'checkout__step--active' : ''}`}>
               <span className="checkout__step-num">2</span>
-              <span className="checkout__step-label">Pago</span>
+              <span className="checkout__step-label">Confirmación</span>
             </div>
           </div>
         </div>
@@ -376,7 +246,7 @@ export default function Checkout({ onBack }) {
                 </div>
 
                 <button className="checkout__continue" onClick={handleContinue}>
-                  Continuar al pago
+                  Continuar
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
                   </svg>
@@ -384,130 +254,72 @@ export default function Checkout({ onBack }) {
               </div>
             )}
 
-            {step === 'payment' && (
+            {step === 'confirm' && (
               <div className="checkout__section">
-                <h3 className="checkout__section-title">Método de pago</h3>
+                <h3 className="checkout__section-title">Confirmá tu pedido</h3>
 
-                {/* Payment method selector */}
-                <div className="checkout__pay-methods">
-                  <button
-                    className={`checkout__pay-method ${form.payMethod === 'card' ? 'checkout__pay-method--active' : ''}`}
-                    onClick={() => setForm(f => ({ ...f, payMethod: 'card' }))}
-                    disabled={processing}
-                  >
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-                      <line x1="1" y1="10" x2="23" y2="10" />
-                    </svg>
-                    Tarjeta
-                  </button>
-                  <button
-                    className={`checkout__pay-method ${form.payMethod === 'transfer' ? 'checkout__pay-method--active' : ''}`}
-                    onClick={() => setForm(f => ({ ...f, payMethod: 'transfer' }))}
-                    disabled={processing}
-                  >
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 3h18v18H3z" /><path d="M12 8v8M8 12h8" />
-                    </svg>
-                    Transferencia
-                  </button>
-                  <button
-                    className={`checkout__pay-method ${form.payMethod === 'mp' ? 'checkout__pay-method--active' : ''}`}
-                    onClick={() => setForm(f => ({ ...f, payMethod: 'mp' }))}
-                    disabled={processing}
-                  >
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 6v12M6 12h12" />
-                    </svg>
-                    Mercado Pago
-                  </button>
+                <div className="checkout__order-info">
+                  <p>Este pedido no incluye pago online. Al confirmarlo, nos vamos a contactar con vos por email para coordinar el pago y el envío.</p>
                 </div>
 
-                {form.payMethod === 'card' && (
-                  <div className="checkout__card-brick">
-                    <CardPayment
-                      initialization={{ amount: total }}
-                      customization={{
-                        visual: {
-                          style: {
-                            customVariables: {
-                              formBackgroundColor: '#ffffff',
-                              baseColor: '#D8572E',
-                            },
-                          },
-                        },
-                      }}
-                      onSubmit={handleCardSubmit}
-                      onReady={() => console.log('CardPayment Brick ready')}
-                      onError={(error) => {
-                        console.error('CardPayment Brick error:', error);
-                        setPayError('Error al cargar el formulario de pago. Recargá la página.');
-                      }}
-                    />
+                <div className="checkout__review">
+                  <div className="checkout__review-row">
+                    <span className="checkout__review-label">Nombre</span>
+                    <span className="checkout__review-value">{form.name}</span>
                   </div>
-                )}
-
-                {form.payMethod === 'mp' && (
-                  <div className="checkout__mp-info">
-                    <div className="checkout__mp-info-icon">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
-                      </svg>
+                  <div className="checkout__review-row">
+                    <span className="checkout__review-label">Email</span>
+                    <span className="checkout__review-value">{form.email}</span>
+                  </div>
+                  {form.phone && (
+                    <div className="checkout__review-row">
+                      <span className="checkout__review-label">Teléfono</span>
+                      <span className="checkout__review-value">{form.phone}</span>
                     </div>
-                    <p>Al confirmar, serás redirigido a Mercado Pago para completar tu pago con tu cuenta o saldo disponible.</p>
+                  )}
+                  <div className="checkout__review-row">
+                    <span className="checkout__review-label">Dirección</span>
+                    <span className="checkout__review-value">{form.address}, {form.city}{form.zip ? ` (${form.zip})` : ''}</span>
                   </div>
-                )}
-
-                {form.payMethod === 'transfer' && (
-                  <div className="checkout__transfer-info">
-                    <p>Al confirmar, te mostraremos los datos bancarios para que realices la transferencia. Tu pedido quedará reservado.</p>
-                  </div>
-                )}
+                </div>
 
                 {/* Error message */}
-                {payError && (
+                {orderError && (
                   <div className="checkout__pay-error">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" />
                     </svg>
-                    {payError}
+                    {orderError}
                   </div>
                 )}
 
                 <div className="checkout__pay-actions">
                   <button
                     className="checkout__back-btn"
-                    onClick={() => { setStep('info'); setPayError(''); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    onClick={() => { setStep('info'); setOrderError(''); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                     disabled={processing}
                   >
                     ← Volver
                   </button>
-                  {/* Only show confirm button for transfer and MP (Card has its own button via Brick) */}
-                  {form.payMethod !== 'card' && (
-                    <button
-                      className={`checkout__pay-btn ${processing ? 'checkout__pay-btn--processing' : ''}`}
-                      onClick={handlePay}
-                      disabled={processing}
-                    >
-                      {processing ? (
-                        <>
-                          <span className="checkout__pay-spinner" />
-                          Procesando...
-                        </>
-                      ) : (
-                        <>
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
-                          </svg>
-                          {form.payMethod === 'transfer'
-                            ? `Confirmar pedido · $${total.toLocaleString('es-AR')}`
-                            : `Pagar con Mercado Pago · $${total.toLocaleString('es-AR')}`
-                          }
-                        </>
-                      )}
-                    </button>
-                  )}
+                  <button
+                    className={`checkout__pay-btn ${processing ? 'checkout__pay-btn--processing' : ''}`}
+                    onClick={handlePlaceOrder}
+                    disabled={processing}
+                  >
+                    {processing ? (
+                      <>
+                        <span className="checkout__pay-spinner" />
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+                        </svg>
+                        {`Realizar pedido · $${total.toLocaleString('es-AR')}`}
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
             )}
@@ -546,9 +358,9 @@ export default function Checkout({ onBack }) {
             </div>
             <div className="checkout__summary-trust">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
+                <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
               </svg>
-              Pago 100% seguro y encriptado
+              Te contactamos para coordinar pago y envío
             </div>
           </div>
         </div>
