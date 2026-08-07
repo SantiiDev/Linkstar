@@ -177,7 +177,7 @@ app.listen(PORT, () => {
   ╔════════════════════════════════════════════╗
   ║   🚀  Linkstar Backend running            ║
   ║   📍  http://localhost:${PORT}              ║
-  ║   🔗  Frontend: ${FRONTEND_URL}    ║
+  ║   🔗  Frontend: ${FRONTEND_URLS.join(', ')}    ║
   ╚════════════════════════════════════════════╝
   `);
 });
