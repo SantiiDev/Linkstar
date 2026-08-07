@@ -2,8 +2,15 @@ import { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import './Checkout.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const WEB3FORMS_KEY = '32d006c0-18f0-411b-989f-19a34a6963c2';
+
+// Checkout en pausa: el registro del pedido en la base de datos (backend +
+// Supabase) está desactivado por ahora. El número de orden se genera acá
+// mismo y el pedido sólo queda como notificación por mail (Web3Forms) —
+// no hay persistencia ni forma de consultarlo después vía /api/orders.
+function generateOrderNumber() {
+  return `LS-${Date.now().toString(36).toUpperCase()}${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
+}
 
 // Web3Forms (plan free) rechaza llamadas server-to-server, así que este mail
 // se manda desde el navegador (igual que el formulario de Contacto) y no
@@ -88,62 +95,28 @@ export default function Checkout({ onBack }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // ── Realizar pedido (sin pago online) ──
+  // ── Realizar pedido (sin pago online, sólo notificación por mail) ──
   const handlePlaceOrder = async () => {
     setProcessing(true);
     setOrderError('');
 
+    const newOrderNumber = generateOrderNumber();
+
     try {
-      const response = await fetch(`${API_URL}/api/orders`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: items.map(i => ({
-            id: i.id,
-            key: i.key,
-            name: i.name,
-            price: i.price,
-            qty: i.qty,
-            color: i.color,
-            image: i.image,
-          })),
-          customer: {
-            name: form.name,
-            email: form.email,
-            phone: form.phone,
-            address: form.address,
-            city: form.city,
-            zip: form.zip,
-          },
-        }),
+      await sendOrderEmail({
+        orderNumber: newOrderNumber,
+        customer: form,
+        items,
+        total,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al registrar el pedido');
-      }
-
-      setOrderNumber(data.order_number);
+      setOrderNumber(newOrderNumber);
       setStep('success');
       clearCart();
       window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      // El pedido ya quedó guardado: si el mail falla, no lo mostramos como
-      // error de pedido, sólo lo logueamos para poder diagnosticarlo.
-      try {
-        await sendOrderEmail({
-          orderNumber: data.order_number,
-          customer: form,
-          items,
-          total,
-        });
-      } catch (emailErr) {
-        console.error('Order email error:', emailErr);
-      }
     } catch (err) {
-      console.error('Order error:', err);
-      setOrderError(err.message || 'Ocurrió un error al registrar el pedido. Intentá de nuevo.');
+      console.error('Order email error:', err);
+      setOrderError(err.message || 'Ocurrió un error al enviar el pedido. Intentá de nuevo.');
     } finally {
       setProcessing(false);
     }
