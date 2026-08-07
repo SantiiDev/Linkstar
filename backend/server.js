@@ -6,9 +6,11 @@ import { createClient } from '@supabase/supabase-js';
 // ─── Config ───────────────────────────────────────────────
 const app = express();
 const PORT = process.env.PORT || 3001;
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const FRONTEND_URLS = (process.env.FRONTEND_URL || 'http://localhost:5174')
+  .split(',')
+  .map(u => u.trim());
 
-app.use(cors({ origin: FRONTEND_URL }));
+app.use(cors({ origin: FRONTEND_URLS }));
 app.use(express.json());
 
 // ─── Supabase ─────────────────────────────────────────────

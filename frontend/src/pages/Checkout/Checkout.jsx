@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import './Checkout.css';
 
-const API_URL = 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const WEB3FORMS_KEY = '32d006c0-18f0-411b-989f-19a34a6963c2';
 
 // Web3Forms (plan free) rechaza llamadas server-to-server, así que este mail
