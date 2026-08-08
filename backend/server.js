@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { createClient } from '@supabase/supabase-js';
 
 // ─── Config ───────────────────────────────────────────────
@@ -10,8 +12,19 @@ const FRONTEND_URLS = (process.env.FRONTEND_URL || 'http://localhost:5174')
   .split(',')
   .map(u => u.trim());
 
+app.use(helmet());
 app.use(cors({ origin: FRONTEND_URLS }));
 app.use(express.json());
+
+// Un tap de NFC/QR legítimo es, como mucho, unos pocos por minuto y por IP
+// (una persona tocando el expositor). Esto no frena el uso normal, sólo
+// scraping/enumeración de public_id y floods.
+const scanLimiter = rateLimit({
+  windowMs: 60_000,
+  limit: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // ─── Supabase ─────────────────────────────────────────────
 // El schema en supabase/migrations/0006_rls.sql niega insert/update/delete
@@ -32,53 +45,6 @@ const supabase = createClient(
   { auth: { persistSession: false } },
 );
 
-// ─── Helpers ──────────────────────────────────────────────
-function generateOrderNumber() {
-  return `LS-${Date.now().toString(36).toUpperCase()}${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
-}
-
-// Inserta la orden + sus renglones (public.orders / public.order_items,
-// ver supabase/migrations/0005_billing_and_orders.sql). Lanza si algo falla:
-// mejor un 500 explícito que un pedido "fantasma" sin order_items.
-async function createOrder({ orderNumber, buyer, items, total }) {
-  const { data: order, error: orderError } = await supabase
-    .from('orders')
-    .insert({
-      order_number: orderNumber,
-      status: 'pending',
-      buyer_name: buyer.name,
-      buyer_email: buyer.email,
-      buyer_phone: buyer.phone || null,
-      shipping_address: {
-        address: buyer.address,
-        city: buyer.city,
-        zip: buyer.zip || null,
-      },
-      subtotal: total,
-      shipping_cost: 0,
-      discount: 0,
-      total,
-    })
-    .select()
-    .single();
-
-  if (orderError) throw orderError;
-
-  const orderItems = items.map((item) => ({
-    order_id: order.id,
-    sku: String(item.id ?? item.key),
-    product_name: `${item.name}${item.color ? ` - ${item.color === 'negro' ? 'Negro' : 'Blanco'}` : ''}`,
-    quantity: item.qty,
-    unit_price: item.price,
-    total_price: item.price * item.qty,
-  }));
-
-  const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
-  if (itemsError) throw itemsError;
-
-  return order;
-}
-
 // ─── Routes ───────────────────────────────────────────────
 
 // Health check
@@ -92,7 +58,7 @@ app.get('/api/health', (_req, res) => {
 // sólo service_role) y redirige. SIEMPRE responde con un destino, incluso
 // si algo falla — ver supabase/migrations/0007_functions_and_jobs.sql.
 // ──────────────────────────────────────────────────────────
-app.get('/d/:publicId', async (req, res) => {
+app.get('/d/:publicId', scanLimiter, async (req, res) => {
   const fallback = 'https://linkstar.com.ar';
   try {
     const ip = (req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress || '').trim();
@@ -114,62 +80,14 @@ app.get('/d/:publicId', async (req, res) => {
 });
 
 // ──────────────────────────────────────────────────────────
-// POST /api/orders
-// Registra un pedido (sin pago online) en Supabase.
-// El aviso por mail (Web3Forms) lo dispara el frontend directamente: el
-// plan gratuito de Web3Forms rechaza las llamadas server-to-server
-// ("Use our API in client side..."), así que server.js no puede mandarlo.
+// POST /api/orders y GET /api/orders/:orderNumber — desactivados a
+// propósito. El checkout actual no los llama (ver Checkout.jsx) y el
+// pago/checkout real se va a reconstruir desde cero con la pasarela de
+// pago más adelante. Antes de reactivarlos: validar precio/cantidad de
+// cada item contra el catálogo real (no confiar en el precio que manda
+// el cliente) y exigir auth para leer una orden por número, ya que hoy
+// exponía nombre/email/teléfono/dirección del comprador sin autenticar.
 // ──────────────────────────────────────────────────────────
-app.post('/api/orders', async (req, res) => {
-  try {
-    const { items, customer } = req.body;
-
-    if (!items?.length || !customer?.name || !customer?.email) {
-      return res.status(400).json({ error: 'Datos incompletos' });
-    }
-
-    const orderNumber = generateOrderNumber();
-    const total = items.reduce((sum, i) => sum + i.price * i.qty, 0);
-
-    await createOrder({
-      orderNumber,
-      buyer: customer,
-      items,
-      total,
-    });
-
-    res.json({
-      order_number: orderNumber,
-      total,
-    });
-  } catch (err) {
-    console.error('Error creating order:', err);
-    res.status(500).json({ error: 'Error al registrar el pedido' });
-  }
-});
-
-// ──────────────────────────────────────────────────────────
-// GET /api/orders/:orderNumber
-// Get order status
-// ──────────────────────────────────────────────────────────
-app.get('/api/orders/:orderNumber', async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from('orders')
-      .select('*, order_items(*)')
-      .eq('order_number', req.params.orderNumber)
-      .single();
-
-    if (error || !data) {
-      return res.status(404).json({ error: 'Orden no encontrada' });
-    }
-
-    res.json(data);
-  } catch (err) {
-    console.error('Error fetching order:', err);
-    res.status(500).json({ error: 'Error al obtener la orden' });
-  }
-});
 
 // ─── Start ────────────────────────────────────────────────
 app.listen(PORT, () => {

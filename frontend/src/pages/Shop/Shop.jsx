@@ -5,7 +5,7 @@ import './Shop.css';
 const products = [
   {
     id: 'google-nfc',
-    name: 'NFC Google Reviews',
+    name: 'Expositor Google Reviews',
     description: 'Cartel expositor NFC para Google. Tus clientes escanean y dejan su reseña al instante. Aumenta tu reputación online con un solo toque y convierte cada visita en una valoración que te posiciona mejor en Google Maps.',
     price: 35000,
     originalPrice: 49000,
@@ -20,13 +20,13 @@ const products = [
         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
       </svg>
     ),
-    images: { negro: '/google-nfc-black.png', blanco: '/google-nfc-white.png' },
-    features: ['Reseñas de Google al instante', 'Sin app requerida', 'Compatible con todos los smartphones', 'Programable desde LinkstarApp'],
+    images: { negro: '/google-nfc-black.webp', blanco: '/google-nfc-white.webp' },
+    features: ['Reseñas de Google al instante', 'Aumenta reseñas orgánicamente', 'Sin app requerida', 'Programable desde LinkstarApp'],
   },
   {
     id: 'instagram-nfc',
-    name: 'NFC Instagram',
-    description: 'Cartel expositor NFC para Instagram. Con un solo toque, tus clientes acceden directamente a tu perfil y te siguen al instante. Multiplica tu comunidad orgánicamente sin esfuerzo y sin invertir en publicidad.',
+    name: 'Expositor Instagram',
+    description: 'Cartel expositor NFC/QR para Instagram. Con un solo toque, tus clientes acceden directamente a tu perfil y te siguen al instante. Multiplica tu comunidad orgánicamente sin esfuerzo y sin invertir en publicidad.',
     price: 35000,
     originalPrice: 49000,
     badge: 'Nuevo',
@@ -46,7 +46,7 @@ const products = [
         <circle cx="17.5" cy="6.5" r="1.2" fill="white" />
       </svg>
     ),
-    images: { negro: '/instagram-nfc-black.png', blanco: '/instagram-nfc-white.png' },
+    images: { negro: '/instagram-nfc-black.webp', blanco: '/instagram-nfc-white.webp' },
     features: ['Perfil de Instagram al instante', 'Aumenta seguidores orgánicos', 'Sin app requerida', 'Programable desde LinkstarApp'],
   },
 ];
@@ -69,7 +69,7 @@ function ProductCard({ product }) {
   return (
     <div className="shop-card">
       {/* Image Panel */}
-      <div className={`shop-card__image-wrap shop-card__image-wrap--${color}`}>
+      <div className="shop-card__image-wrap">
         <div className={`shop-card__badge shop-card__badge--${product.badgeColor}`}>
           {product.badge}
         </div>
@@ -78,6 +78,7 @@ function ProductCard({ product }) {
           src={product.images[color]}
           alt={`${product.name} - ${color}`}
           className="shop-card__image"
+          loading="lazy"
         />
       </div>
 
@@ -218,7 +219,7 @@ export default function Shop({ onBack }) {
           <h1 className="shop__hero-title">
             Nuestros <span className="shop__hero-highlight">productos NFC</span>
           </h1>
-          <p className="shop__hero-sub">Selecciona color y cantidad. Haz clic en el producto para ver más detalles.</p>
+          <p className="shop__hero-sub">Selecciona color y cantidad.</p>
         </div>
       </div>
 
@@ -235,7 +236,7 @@ export default function Shop({ onBack }) {
           {[
             {
               icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>,
-              label: 'Envío express', sub: 'Todo el país en 24–48hs'
+              label: 'Envíos a todo el país', sub: 'Argentina'
             },
             {
               icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>,

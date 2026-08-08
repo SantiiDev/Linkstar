@@ -10,8 +10,8 @@ const steps = [
         <path d="M9 9h6M9 12h6M9 15h4" />
       </svg>
     ),
-    title: 'Elige y personaliza tu cartel',
-    description: 'Selecciona el modelo que mejor se adapta a tu negocio y personalízalo con tu logo, colores y diseño desde nuestra plataforma. Sin complicaciones.',
+    title: 'Escanea el QR de tu dispositivo',
+    description: 'Cuando recibas tu Linkstar, escanea el código QR impreso en el cartel para activarlo por primera vez.',
   },
   {
     number: '02',
@@ -21,8 +21,8 @@ const steps = [
         <circle cx="12" cy="9" r="2.5" />
       </svg>
     ),
-    title: 'Colócalo en tu local',
-    description: 'Recibe tu cartel en casa y colócalo donde más lo vean tus clientes. Sin cables, sin instalaciones complejas. En segundos está listo.',
+    title: 'Escribe el nombre de tu negocio en Google Maps',
+    description: 'Te llevará a la plataforma LinkstarApp. Busca tu negocio en el buscador conectado a Google Maps y guarda la opción correcta.',
   },
   {
     number: '03',
@@ -33,8 +33,8 @@ const steps = [
         <circle cx="12" cy="12" r="1" fill="currentColor" />
       </svg>
     ),
-    title: 'Tus clientes se conectan',
-    description: 'Con solo acercar el móvil, tus clientes acceden a tu menú, reseñas, redes sociales o cualquier contenido que configures. Mágico, pero es NFC.',
+    title: '¡Tu Linkstar ya está listo!',
+    description: 'Así de fácil. Ahora, cuando un cliente acerque el móvil, lo llevará directo a dejar su reseña en Google.',
   },
 ];
 
@@ -62,10 +62,10 @@ export default function HowItWorks({ onShop }) {
         <div className="how__header">
           <span className="how__label">Así de fácil</span>
           <h2 className="how__title">
-            Conectado en <span>3 simples pasos</span>
+            Conecta tu Linkstar en <span>20 segundos</span>
           </h2>
           <p className="how__description">
-            Empieza a conectar con tus clientes hoy mismo. El proceso es tan sencillo que lo tendrás listo antes de lo que imaginas.
+            Vincula tu dispositivo con tu negocio en Google Maps en menos de un minuto. El proceso es tan sencillo que lo tendrás listo antes de lo que imaginas.
           </p>
         </div>
 

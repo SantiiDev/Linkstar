@@ -42,22 +42,8 @@ export default function Navbar({ onShop, onHome, onContact, onLinkstarApp, curre
     onLinkstarApp();
   };
 
-  const handleAnchor = (anchor) => {
-    setMenuOpen(false);
-    if (currentPage !== 'home') {
-      onHome();
-      setTimeout(() => {
-        const el = document.querySelector(anchor);
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 200);
-    } else {
-      const el = document.querySelector(anchor);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const navLinks = [
-    { label: 'Inicio', action: handleHome, isActive: currentPage === 'home' && true, anchor: null },
+    { label: 'Inicio', action: handleHome, isActive: currentPage === 'home', anchor: null },
     { label: 'Tienda', action: handleShop, isActive: currentPage === 'shop', anchor: null },
     { label: 'LinkstarApp', action: handleLinkstarApp, isActive: currentPage === 'linkstarapp', anchor: null },
     { label: 'Contacto', action: handleContact, isActive: currentPage === 'contact', anchor: null },

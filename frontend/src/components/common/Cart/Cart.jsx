@@ -51,7 +51,7 @@ export default function Cart({ onCheckout }) {
               {items.map(item => (
                 <li className="cart-item" key={item.key}>
                   <div className={`cart-item__image-wrap cart-item__image-wrap--${item.color}`}>
-                    <img src={item.image} alt={item.name} className="cart-item__image" />
+                    <img src={item.image} alt={item.name} className="cart-item__image" loading="lazy" />
                   </div>
                   <div className="cart-item__info">
                     <div className="cart-item__top">

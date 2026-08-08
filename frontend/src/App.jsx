@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import { CartProvider } from './context/CartContext';
 import Navbar from './components/layout/Navbar/Navbar';
 import Hero from './components/sections/Hero/Hero';
@@ -6,17 +6,20 @@ import Features from './components/sections/Features/Features';
 import HowItWorks from './components/sections/HowItWorks/HowItWorks';
 import ReviewsCTA from './components/sections/ReviewsCTA/ReviewsCTA';
 import FAQ from './components/sections/FAQ/FAQ';
-import Contact from './pages/Contact/Contact';
 import Footer from './components/layout/Footer/Footer';
-import Shop from './pages/Shop/Shop';
-import LinkstarApp from './pages/LinkstarApp/LinkstarApp';
 import Cart from './components/common/Cart/Cart';
-import Checkout from './pages/Checkout/Checkout';
-import Legal from './pages/Info/Legal';
-import Privacy from './pages/Info/Privacy';
-import Terms from './pages/Info/Terms';
-import Warranty from './pages/Info/Warranty';
-import About from './pages/Info/About';
+
+// Cargadas sólo cuando se navega a esa página: no hace falta que el bundle
+// inicial de la home incluya el checkout, el shop o las páginas legales.
+const Contact = lazy(() => import('./pages/Contact/Contact'));
+const Shop = lazy(() => import('./pages/Shop/Shop'));
+const LinkstarApp = lazy(() => import('./pages/LinkstarApp/LinkstarApp'));
+const Checkout = lazy(() => import('./pages/Checkout/Checkout'));
+const Legal = lazy(() => import('./pages/Info/Legal'));
+const Privacy = lazy(() => import('./pages/Info/Privacy'));
+const Terms = lazy(() => import('./pages/Info/Terms'));
+const Warranty = lazy(() => import('./pages/Info/Warranty'));
+const About = lazy(() => import('./pages/Info/About'));
 
 export default function App() {
   const [page, setPage] = useState('home'); // 'home' | 'shop' | 'contact' | 'checkout'
@@ -56,7 +59,8 @@ export default function App() {
       {page !== 'checkout' && (
         <Navbar onShop={goToShop} onHome={goHome} onContact={goToContact} onLinkstarApp={goToLinkstarApp} currentPage={page} />
       )}
-      
+
+      <Suspense fallback={<div className="page-loading" />}>
       {page === 'checkout' && <Checkout onBack={goHome} />}
 
       {page === 'shop' && (
@@ -84,9 +88,9 @@ export default function App() {
         <>
           <main>
             <Hero onShop={goToShop} onLinkstarApp={goToLinkstarApp} />
-            <Features onShop={goToShop} />
-            <HowItWorks onShop={goToShop} />
             <ReviewsCTA onShop={goToShop} />
+            <HowItWorks onShop={goToShop} />
+            <Features onShop={goToShop} />
             <FAQ onContact={goToContact} />
           </main>
           <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} onNavigate={navigateTo} />
@@ -127,6 +131,7 @@ export default function App() {
           <Footer onContact={goToContact} onShop={goToShop} onLinkstarApp={goToLinkstarApp} onNavigate={navigateTo} />
         </>
       )}
+      </Suspense>
 
       <Cart onCheckout={goToCheckout} />
     </CartProvider>

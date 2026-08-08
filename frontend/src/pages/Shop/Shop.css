@@ -153,14 +153,7 @@
   padding: var(--space-4);
   min-height: 260px;
   transition: background var(--transition-slow);
-}
-
-.shop-card__image-wrap--negro {
   background: linear-gradient(160deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
-}
-
-.shop-card__image-wrap--blanco {
-  background: linear-gradient(160deg, #f0f0f5 0%, #e4e4ec 60%, #d8d8e8 100%);
 }
 
 .shop-card__badge {

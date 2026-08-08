@@ -124,6 +124,11 @@ button {
   padding: 0 var(--space-6);
 }
 
+/* Suspense fallback while a lazy-loaded page chunk is fetched */
+.page-loading {
+  min-height: 60vh;
+}
+
 /* --- Scrollbar --- */
 ::-webkit-scrollbar {
   width: 8px;

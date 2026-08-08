@@ -305,7 +305,7 @@ export default function Checkout({ onBack }) {
               {items.map(item => (
                 <li className="checkout__summary-item" key={item.key}>
                   <div className={`checkout__summary-img checkout__summary-img--${item.color}`}>
-                    <img src={item.image} alt={item.name} />
+                    <img src={item.image} alt={item.name} loading="lazy" />
                   </div>
                   <div className="checkout__summary-info">
                     <span className="checkout__summary-name">{item.name}</span>

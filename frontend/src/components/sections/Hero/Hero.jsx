@@ -44,8 +44,8 @@ export default function Hero({ onShop, onLinkstarApp }) {
           </h1>
 
           <p className="hero__subtitle">
-            Carteles expositores inteligentes con tecnología NFC integrada. 
-            Conecta con tus clientes con un simple toque y transforma cada 
+            Carteles expositores inteligentes con tecnología NFC integrada.
+            Conecta con tus clientes con un simple toque y transforma cada
             punto de contacto en una experiencia digital.
           </p>
 
@@ -85,8 +85,8 @@ export default function Hero({ onShop, onLinkstarApp }) {
             </div>
             <div className="hero__stat-divider"></div>
             <div className="hero__stat">
-              <span className="hero__stat-number">24h</span>
-              <span className="hero__stat-label">Envío express</span>
+              <span className="hero__stat-number">ARG</span>
+              <span className="hero__stat-label">Envíos a todo el país</span>
             </div>
           </div>
         </div>
@@ -94,14 +94,14 @@ export default function Hero({ onShop, onLinkstarApp }) {
         <div className="hero__image-wrapper">
           <div className="hero__image-glow"></div>
           <div className="hero__image-composite">
-            <img 
-              src="/google-nfc-black.png" 
-              alt="Cartel NFC Google" 
+            <img
+              src="/google-nfc-black.webp"
+              alt="Cartel NFC Google"
               className="hero__image-piece hero__image-piece--1"
             />
-            <img 
-              src="/instagram-nfc-white.png" 
-              alt="Cartel NFC Instagram" 
+            <img
+              src="/instagram-nfc-white.webp"
+              alt="Cartel NFC Instagram"
               className="hero__image-piece hero__image-piece--2"
             />
           </div>

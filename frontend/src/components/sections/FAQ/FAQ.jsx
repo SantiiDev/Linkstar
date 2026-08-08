@@ -4,27 +4,27 @@ import './FAQ.css';
 const faqData = [
   {
     question: '¿Qué es un cartel expositor NFC?',
-    answer: 'Es un cartel de diseño premium con un chip NFC integrado. Cuando un cliente acerca su smartphone al cartel, accede automáticamente a tu contenido digital: menú, catálogo, web, redes sociales, ofertas o cualquier enlace que configures desde la plataforma Linkstar.',
+    answer: 'Es un cartel de diseño premium con un chip NFC integrado. Cuando un cliente acerca su smartphone al cartel, accede automáticamente a tu contenido digital: menú, catálogo, web, redes sociales, ofertas o cualquier enlace que configures desde la plataforma Linkstar',
   },
   {
     question: '¿Necesito una app para que funcione?',
-    answer: 'No. La tecnología NFC funciona de forma nativa en la mayoría de smartphones modernos (iPhone y Android). Tu cliente solo tiene que acercar su teléfono al cartel, sin descargar ninguna aplicación.',
+    answer: 'No. La tecnología NFC funciona de forma nativa en la mayoría de smartphones modernos (iPhone y Android). Tu cliente solo tiene que acercar su teléfono al cartel, sin descargar ninguna aplicación',
   },
   {
     question: '¿Puedo cambiar el contenido del cartel?',
-    answer: 'Sí, las veces que quieras. Desde la plataforma Linkstar puedes actualizar los enlaces y el contenido digital vinculado a tu cartel en cualquier momento, sin necesidad de cambiar el cartel físico.',
+    answer: 'Sí, las veces que quieras. Desde la plataforma Linkstar puedes actualizar los enlaces y el contenido digital vinculado a tu cartel en cualquier momento, sin necesidad de cambiar el cartel físico',
   },
   {
     question: '¿Qué opciones de personalización hay?',
-    answer: 'Ofrecemos personalización completa: elige el tamaño, material, colores, tu logotipo y diseño. Nuestro equipo de diseño trabaja contigo para crear un cartel que represente perfectamente tu marca.',
+    answer: 'Proximamente ofreceremos personalizaición completa. En la sección "Tienda" estan los productos que ofrecemos actualmente',
   },
   {
     question: '¿Cuánto tarda el envío?',
-    answer: 'Procesamos tu pedido en 24-48 horas laborables. El envío estándar tarda entre 3-5 días laborables en península. También ofrecemos envío express en 24h para pedidos urgentes.',
+    answer: 'Procesamos tu pedido lo antes posible. El envío estándar tarda entre 3-5 días laborables',
   },
   {
     question: '¿Los carteles son resistentes?',
-    answer: 'Absolutamente. Utilizamos materiales de alta calidad diseñados para uso intensivo. Nuestros carteles están pensados para entornos comerciales y resisten el uso diario. El chip NFC tiene una vida útil prácticamente ilimitada.',
+    answer: 'Absolutamente. Utilizamos materiales de alta calidad diseñados para uso intensivo. Nuestros carteles están pensados para entornos comerciales y resisten el uso diario. El chip NFC y el QR tienen una vida útil prácticamente ilimitada',
   },
 ];
 

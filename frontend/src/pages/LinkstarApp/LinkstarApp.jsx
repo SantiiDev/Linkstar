@@ -68,7 +68,6 @@ const Svg = ({ children, color }) => (
   </svg>
 );
 
-const UsersIcon = <Svg color="var(--color-orange)"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></Svg>;
 const MapPinIcon = <Svg color="var(--color-gold)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></Svg>;
 const SettingsIcon = <Svg color="var(--color-forest)"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></Svg>;
 const UtensilsIcon = <Svg color="var(--color-orange)"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /><path d="M7 2v20" /><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" /></Svg>;
@@ -82,28 +81,29 @@ const BarChartIcon = <Svg color="#8B5CF6"><line x1="12" y1="20" x2="12" y2="10" 
 const ClipboardIcon = <Svg color="#6366F1"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /><rect x="8" y="2" width="8" height="4" rx="1" ry="1" /></Svg>;
 const DollarIcon = <Svg color="#10B981"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></Svg>;
 const LinkIcon = <Svg color="#EC4899"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></Svg>;
+const SmileIcon = <Svg color="#6B7280"><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" y1="9" x2="9.01" y2="9" /><line x1="15" y1="9" x2="15.01" y2="9" /></Svg>;
 
 const features = [
   {
-    icon: UsersIcon,
-    title: 'Ranking de empleados',
-    badge: 'Ideal con Tarjetas NFC',
-    description: 'Asigna un nombre a cada tarjeta o dispositivo y descubre qué miembro del equipo consigue más reseñas. Motiva a tu equipo con datos reales.',
+    icon: BarChartIcon,
+    title: 'Métricas de Google',
+    badge: 'Reseñas en vivo',
+    description: 'Mirá cuántas reseñas y qué rating tiene tu negocio en Google, actualizado día a día. Sin entrar a Google Maps a revisar a mano.',
     points: [
-      'Asigna nombres a cada dispositivo',
-      'Ranking automático por escaneos',
-      'Ideal para gamificar y motivar'
+      'Total de reseñas y rating promedio',
+      'Evolución semana a semana',
+      'Distribución por cantidad de estrellas'
     ]
   },
   {
-    icon: MapPinIcon,
-    title: 'Vista por ubicaciones',
-    badge: 'Para múltiples locales',
-    description: 'Perfecto para negocios con varios locales o agencias de marketing. Ve el rendimiento de cada ubicación a un vistazo.',
+    icon: ClipboardIcon,
+    title: 'Reportes e Insights',
+    badge: 'Con IA',
+    description: 'Entendé qué piensan realmente tus clientes: puntaje NPS, sentimiento de cada reseña y las palabras clave que más se repiten.',
     points: [
-      'Conecta múltiples fichas a una cuenta',
-      'Compara rendimiento entre ubicaciones',
-      'Cambia la conexión si necesitas moverlo'
+      'Puntaje NPS automático',
+      'Análisis de sentimiento con IA',
+      'Palabras clave más mencionadas'
     ]
   },
   {
@@ -158,29 +158,21 @@ const useCases = [
   }
 ];
 
-const chartDataMock = [
-  { scans: 45, reviews: 18, day: 'Lun' },
-  { scans: 68, reviews: 28, day: 'Mar' },
-  { scans: 40, reviews: 15, day: 'Mié' },
-  { scans: 85, reviews: 35, day: 'Jue' },
-  { scans: 55, reviews: 22, day: 'Vie' },
-  { scans: 72, reviews: 30, day: 'Sáb' },
-  { scans: 95, reviews: 40, day: 'Dom' },
+const dashboardKpisMock = [
+  { icon: StarIcon, label: 'Reseñas totales en Google', value: '213', trend: '+13 esta semana' },
+  { icon: TrophyIcon, label: 'Rating promedio', value: '4.8★', trend: '+0.2 este mes' },
+  { icon: RefreshIcon, label: 'Tasa de respuesta', value: '92%', trend: '+5%' },
+  { icon: SmileIcon, label: 'Satisfacción positiva', value: '77%', trend: '+3%' },
 ];
 
-const recentActivityMock = [
-  { device: 'Google NFC #1', time: 'Hace 2 min', type: 'Escaneo' },
-  { device: 'Instagram NFC #3', time: 'Hace 8 min', type: 'Escaneo' },
-  { device: 'Google NFC #2', time: 'Hace 15 min', type: 'Reseña' },
-  { device: 'Google NFC #1', time: 'Hace 23 min', type: 'Escaneo' },
-  { device: 'Instagram NFC #1', time: 'Hace 41 min', type: 'Reseña' },
-];
+const reviewsTrendMock = [28, 40, 34, 52, 46, 58, 50, 64];
 
-const topDevicesMock = [
-  { name: 'Google NFC #1', img: '/google-nfc-black.png', scans: 412, status: 'Activo' },
-  { name: 'Instagram NFC #1', img: '/instagram-nfc-white.png', scans: 328, status: 'Activo' },
-  { name: 'Google NFC #2', img: '/google-nfc-white.png', scans: 287, status: 'Activo' },
-  { name: 'Instagram NFC #2', img: '/instagram-nfc-black.png', scans: 195, status: 'Activo' },
+const starDistributionMock = [
+  { stars: 5, pct: 74 },
+  { stars: 4, pct: 16 },
+  { stars: 3, pct: 6 },
+  { stars: 2, pct: 3 },
+  { stars: 1, pct: 1 },
 ];
 
 const employeeRankingMock = [
@@ -276,7 +268,7 @@ export default function LinkstarApp({ onShop, onContact }) {
               </div>
               <div className="lapp__stat-div"></div>
               <div className="lapp__stat">
-                <span className="lapp__stat-num"><CountUp end={0} suffix="€" /></span>
+                <span className="lapp__stat-num">$<CountUp end={0} /></span>
                 <span className="lapp__stat-text">Coste de plataforma</span>
               </div>
             </div>
@@ -287,135 +279,151 @@ export default function LinkstarApp({ onShop, onContact }) {
       {/* 1.5 DASHBOARD MOCKUP SECTION */}
       <section className="lapp__dashboard-section container lapp-animate" ref={addToRefs}>
         <div className="lapp__dashboard-mock">
-          {/* Top bar */}
-          <div className="lapp__dash-topbar">
-            <div className="lapp__dash-topbar-left">
+          <div className="lapp__dash-shell">
+
+            {/* Sidebar */}
+            <aside className="lapp__dash-sidebar">
               <div className="lapp__mock-logo">linkstar<span style={{ color: 'var(--color-orange)' }}>.</span></div>
-            </div>
-            <div className="lapp__dash-topbar-nav">
-              <span className="lapp__dash-nav-item lapp__dash-nav-item--active">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /></svg>
-                Dashboard
-              </span>
-              <span className="lapp__dash-nav-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2" /></svg>
-                Dispositivos
-              </span>
-              <span className="lapp__dash-nav-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></svg>
-                Empleados
-              </span>
-              <span className="lapp__dash-nav-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
-                Ubicaciones
-              </span>
-            </div>
-            <div className="lapp__dash-topbar-right">
-              <div className="lapp__dash-avatar">A</div>
-            </div>
-          </div>
+              <span className="lapp__dash-sidebar-label">Menú principal</span>
+              <nav className="lapp__dash-sidebar-nav">
+                <span className="lapp__dash-nav-item lapp__dash-nav-item--active">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2" /><path d="M9 22v-4h6v4" /></svg>
+                  Mi Empresa
+                </span>
+                <span className="lapp__dash-nav-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><line x1="12" y1="18" x2="12.01" y2="18" /></svg>
+                  Dispositivos
+                </span>
+                <span className="lapp__dash-nav-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                  Reseñas
+                </span>
+                <span className="lapp__dash-nav-item">
+                  {MapPinIcon}
+                  Google Business
+                </span>
+                <span className="lapp__dash-nav-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="20" x2="12" y2="10" /><line x1="18" y1="20" x2="18" y2="4" /><line x1="6" y1="20" x2="6" y2="16" /></svg>
+                  Reportes
+                </span>
+              </nav>
 
-          {/* Dashboard body */}
-          <div className="lapp__dash-body">
-            {/* KPI Cards */}
-            <div className="lapp__dash-kpis">
-              <div className="lapp__dash-kpi">
-                <div className="lapp__dash-kpi-header">
-                  <span className="lapp__dash-kpi-label">Total Escaneos</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-orange)" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg>
-                </div>
-                <span className="lapp__dash-kpi-value">1,482</span>
-                <span className="lapp__dash-kpi-trend lapp__dash-kpi-trend--up">↑ 12.3% vs mes anterior</span>
-              </div>
-              <div className="lapp__dash-kpi">
-                <div className="lapp__dash-kpi-header">
-                  <span className="lapp__dash-kpi-label">Reseñas Estimadas</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
-                </div>
-                <span className="lapp__dash-kpi-value">345</span>
-                <span className="lapp__dash-kpi-trend lapp__dash-kpi-trend--up">↑ 8.1% vs mes anterior</span>
-              </div>
-              <div className="lapp__dash-kpi">
-                <div className="lapp__dash-kpi-header">
-                  <span className="lapp__dash-kpi-label">Dispositivos Activos</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-forest)" strokeWidth="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2" /></svg>
-                </div>
-                <span className="lapp__dash-kpi-value">8</span>
-                <span className="lapp__dash-kpi-trend" style={{ color: 'rgba(27,26,46,0.4)' }}>Sin cambios</span>
-              </div>
-              <div className="lapp__dash-kpi">
-                <div className="lapp__dash-kpi-header">
-                  <span className="lapp__dash-kpi-label">Tasa de Conversión</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" strokeWidth="2"><line x1="12" y1="20" x2="12" y2="10" /><line x1="18" y1="20" x2="18" y2="4" /><line x1="6" y1="20" x2="6" y2="16" /></svg>
-                </div>
-                <span className="lapp__dash-kpi-value">23.2%</span>
-                <span className="lapp__dash-kpi-trend lapp__dash-kpi-trend--up">↑ 3.4% vs mes anterior</span>
-              </div>
-            </div>
+              <div className="lapp__dash-sidebar-divider" />
 
-            {/* Main content row */}
-            <div className="lapp__dash-main">
-              {/* Chart area */}
-              <div className="lapp__dash-chart-card">
-                <div className="lapp__dash-chart-header">
-                  <span className="lapp__dash-chart-title">Escaneos — Últimos 7 días</span>
-                  <div className="lapp__dash-chart-legend">
-                    <span><span className="lapp__legend-dot" style={{ background: 'var(--color-orange)' }}></span>Escaneos</span>
-                    <span><span className="lapp__legend-dot" style={{ background: 'var(--color-gold)' }}></span>Reseñas</span>
-                  </div>
+              <nav className="lapp__dash-sidebar-nav lapp__dash-sidebar-nav--secondary">
+                <span className="lapp__dash-nav-item">Informes mensuales</span>
+                <span className="lapp__dash-nav-item">Automatizaciones</span>
+                <span className="lapp__dash-nav-item">Configuración</span>
+              </nav>
+
+              <div className="lapp__dash-profile">
+                <div className="lapp__dash-avatar">A</div>
+                <div className="lapp__dash-profile-info">
+                  <span className="lapp__dash-profile-name">Ana, dueña</span>
+                  <span className="lapp__dash-profile-email">ana@minegocio.com</span>
                 </div>
-                <div className="lapp__dash-chart-area">
-                  <div className="lapp__dash-chart-y">
-                    <span>300</span><span>200</span><span>100</span><span>0</span>
-                  </div>
-                  <div className="lapp__dash-chart-bars">
-                    {chartDataMock.map((d, i) => (
-                      <div className="lapp__dash-chart-col" key={i}>
-                        <div className="lapp__dash-bar-group">
-                          <div className="lapp__dash-bar lapp__dash-bar--scans" style={{ height: `${d.scans}%` }}></div>
-                          <div className="lapp__dash-bar lapp__dash-bar--reviews" style={{ height: `${d.reviews}%` }}></div>
-                        </div>
-                        <span className="lapp__dash-bar-label">{d.day}</span>
+              </div>
+            </aside>
+
+            {/* Main content */}
+            <div className="lapp__dash-main2">
+              <div className="lapp__dash-topbar2">
+                <span className="lapp__dash-help">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z" /></svg>
+                  ¿Necesitás ayuda? Contáctanos
+                </span>
+                <span className="lapp__dash-bell" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 01-3.46 0" /></svg>
+                </span>
+              </div>
+
+              <div className="lapp__dash-body">
+                {/* KPI Cards */}
+                <div className="lapp__dash-kpis">
+                  {dashboardKpisMock.map((kpi, i) => (
+                    <div className="lapp__dash-kpi" key={i}>
+                      <div className="lapp__dash-kpi-header">
+                        <span className="lapp__dash-kpi-label">{kpi.label}</span>
+                        <span className="lapp__dash-kpi-icon">{kpi.icon}</span>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Recent activity */}
-              <div className="lapp__dash-activity-card">
-                <span className="lapp__dash-chart-title">Actividad Reciente</span>
-                <div className="lapp__dash-activity-list">
-                  {recentActivityMock.map((act, i) => (
-                    <div className="lapp__dash-activity-row" key={i}>
-                      <div className={`lapp__dash-activity-dot lapp__dash-activity-dot--${act.type === 'Reseña' ? 'review' : 'scan'}`}></div>
-                      <div className="lapp__dash-activity-info">
-                        <span className="lapp__dash-activity-device">{act.device}</span>
-                        <span className="lapp__dash-activity-time">{act.time}</span>
-                      </div>
-                      <span className={`lapp__dash-activity-type lapp__dash-activity-type--${act.type === 'Reseña' ? 'review' : 'scan'}`}>{act.type}</span>
+                      <span className="lapp__dash-kpi-value">{kpi.value}</span>
+                      <span className="lapp__dash-kpi-trend lapp__dash-kpi-trend--up">↑ {kpi.trend}</span>
                     </div>
                   ))}
                 </div>
+
+                {/* Main content row */}
+                <div className="lapp__dash-main">
+                  {/* Reviews over time line chart */}
+                  <div className="lapp__dash-chart-card">
+                    <div className="lapp__dash-chart-header">
+                      <span className="lapp__dash-chart-title">Reseñas en el tiempo</span>
+                      <span className="lapp__dash-chart-sub">Últimas 8 semanas</span>
+                    </div>
+                    <div className="lapp__dash-linechart">
+                      <svg viewBox="0 0 280 110" preserveAspectRatio="none" className="lapp__dash-linechart-svg">
+                        <defs>
+                          <linearGradient id="lapp-line-area" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="var(--color-orange)" stopOpacity="0.25" />
+                            <stop offset="100%" stopColor="var(--color-orange)" stopOpacity="0" />
+                          </linearGradient>
+                        </defs>
+                        <polygon
+                          points={`0,100 ${reviewsTrendMock.map((v, i) => `${(i / (reviewsTrendMock.length - 1)) * 280},${100 - (v / Math.max(...reviewsTrendMock)) * 90}`).join(' ')} 280,100`}
+                          fill="url(#lapp-line-area)"
+                        />
+                        <polyline
+                          points={reviewsTrendMock.map((v, i) => `${(i / (reviewsTrendMock.length - 1)) * 280},${100 - (v / Math.max(...reviewsTrendMock)) * 90}`).join(' ')}
+                          fill="none"
+                          stroke="var(--color-orange)"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        {reviewsTrendMock.map((v, i) => (
+                          <circle
+                            key={i}
+                            cx={(i / (reviewsTrendMock.length - 1)) * 280}
+                            cy={100 - (v / Math.max(...reviewsTrendMock)) * 90}
+                            r="3.5"
+                            fill="#fff"
+                            stroke="var(--color-orange)"
+                            strokeWidth="2.5"
+                          />
+                        ))}
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Star distribution */}
+                  <div className="lapp__dash-chart-card">
+                    <div className="lapp__dash-chart-header">
+                      <span className="lapp__dash-chart-title">Distribución por estrellas</span>
+                      <span className="lapp__dash-chart-sub">213 reseñas en total</span>
+                    </div>
+                    <div className="lapp__dash-stars-list">
+                      {starDistributionMock.map((s) => (
+                        <div className="lapp__dash-stars-row" key={s.stars}>
+                          <span className="lapp__dash-stars-label">{s.stars} ★</span>
+                          <div className="lapp__dash-stars-track">
+                            <div className="lapp__dash-stars-fill" style={{ width: `${s.pct}%` }}></div>
+                          </div>
+                          <span className="lapp__dash-stars-pct">{s.pct}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* AI sentiment card */}
+                <div className="lapp__dash-sentiment-card">
+                  <span className="lapp__dash-sentiment-badge">NUEVO</span>
+                  <h4 className="lapp__dash-sentiment-title">Análisis de sentimiento con IA</h4>
+                  <p className="lapp__dash-sentiment-desc">Detectá automáticamente qué sienten tus clientes en cada reseña.</p>
+                </div>
               </div>
             </div>
 
-            {/* Bottom row: Top devices */}
-            <div className="lapp__dash-devices-card">
-              <span className="lapp__dash-chart-title">Dispositivos — Rendimiento</span>
-              <div className="lapp__dash-devices-grid">
-                {topDevicesMock.map((dev, i) => (
-                  <div className="lapp__dash-device" key={i}>
-                    <img src={dev.img} alt={dev.name} className="lapp__dash-device-img" />
-                    <div className="lapp__dash-device-info">
-                      <span className="lapp__dash-device-name">{dev.name}</span>
-                      <span className="lapp__dash-device-scans">{dev.scans} escaneos</span>
-                    </div>
-                    <span className="lapp__dash-device-status">{dev.status}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -463,6 +471,7 @@ export default function LinkstarApp({ onShop, onContact }) {
               <div className="lapp__case-title-wrapper">
                 <div className="lapp__case-icon">{useCases[0].icon}</div>
                 <h4 className="lapp__case-title">{useCases[0].title}</h4>
+                <span className="lapp__badge-soon">Próximamente</span>
               </div>
               <p className="lapp__case-subtitle">{useCases[0].subtitle}</p>
               <div className="lapp__case-example">{useCases[0].example}</div>
@@ -480,7 +489,7 @@ export default function LinkstarApp({ onShop, onContact }) {
               <div className="lapp__case-mock">
                 <div className="lapp__case-mock-header">
                   <span>Ranking de Empleados</span>
-                  <span className="lapp__mock-header-badge">Este mes</span>
+                  <span className="lapp__mock-header-badge">Próximamente</span>
                 </div>
                 <div className="lapp__case-mock-body lapp__case-mock-body--ranking">
                   {employeeRankingMock.map((emp, j) => (
@@ -502,7 +511,7 @@ export default function LinkstarApp({ onShop, onContact }) {
                     </div>
                   ))}
                   <div className="lapp__ranking-footer">
-                    <img src="/google-nfc-black.png" alt="Tarjeta NFC" className="lapp__ranking-nfc" />
+                    <img src="/google-nfc-black.webp" alt="Tarjeta NFC" className="lapp__ranking-nfc" loading="lazy" />
                     <span>Cada tarjeta vinculada a un empleado</span>
                   </div>
                 </div>
@@ -639,7 +648,7 @@ export default function LinkstarApp({ onShop, onContact }) {
           <div className="lapp__pricing-content">
             <span className="lapp__pricing-overline">Sin sorpresas</span>
             <h3 className="lapp__pricing-title">¿Cuánto cuesta la plataforma?</h3>
-            <div className="lapp__pricing-amount">0€ <span className="lapp__pricing-period">/ siempre</span></div>
+            <div className="lapp__pricing-amount">$0 <span className="lapp__pricing-period">/ siempre</span></div>
             <p className="lapp__pricing-desc">Incluida gratis con la compra de cualquier dispositivo Linkstar. Sin suscripciones ni costes ocultos.</p>
 
             <ul className="lapp__pricing-features">
